@@ -1,37 +1,13 @@
-version: "3.8"
 services:
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: webappdb
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - micro-net
-
-  user-service:
-    image: chvald27/user-service:latest
-    environment:
-      DB_HOST: postgres
-      DB_USER: postgres
-      DB_NAME: webappdb
-    secrets:
-      - DB_PASSWORD
-      - SECRET_KEY
-    ports:
-      - "5000:5000"
-    networks:
-      - micro-net
-    deploy:
-      replicas: 2
-
   auth-service:
-    image: chvald27/auth-service:latest
+    image: auth-service:latest
+    build: ./auth-service
     environment:
-      DB_HOST: postgres
-      DB_USER: postgres
-      DB_NAME: webappdb
+      FLASK_ENV: ${FLASK_ENV:-production}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
     secrets:
       - DB_PASSWORD
       - SECRET_KEY
@@ -42,17 +18,37 @@ services:
     deploy:
       replicas: 2
 
+  user-service:
+    image: user-service:latest
+    build: ./user-service
+    environment:
+      FLASK_ENV: ${FLASK_ENV:-production}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+    secrets:
+      - DB_PASSWORD
+      - SECRET_KEY
+    ports:
+      - "5002:5000"
+    networks:
+      - micro-net
+    deploy:
+      replicas: 2
+
   frontend:
-    image: chvald27/frontend:latest
+    image: frontend:latest
+    build: ./frontend
+    depends_on:
+      - auth-service
+      - user-service
     ports:
       - "8081:80"
     networks:
       - micro-net
     deploy:
       replicas: 2
-
-volumes:
-  postgres_data:
 
 secrets:
   DB_PASSWORD:
@@ -62,3 +58,4 @@ secrets:
 
 networks:
   micro-net:
+
