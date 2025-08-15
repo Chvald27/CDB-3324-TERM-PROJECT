@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: microservices
+data:
+  DB_HOST: "database-cdb-3375-final-project.cl2gqc6scvwd.ca-central-1.rds.amazonaws.com"
+  DB_NAME: "webappdb"
+  DB_USER: "postgres"
+

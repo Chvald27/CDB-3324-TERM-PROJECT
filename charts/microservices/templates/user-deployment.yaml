@@ -1,40 +1,63 @@
+{{- if .Values.userService.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: {{ include "microservices.fullname" . }}-user
   labels:
     app: user-service
+    {{- include "microservices.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.userService.replicas }}
   selector:
     matchLabels:
       app: user-service
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: user-service
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: user-service
-          image: {{ .Values.images.user }}
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.userService.image.repository }}:{{ .Values.userService.image.tag }}"
+          imagePullPolicy: {{ .Values.userService.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.userService.containerPort }}
           env:
             - name: DB_HOST
-              value: postgres
-            - name: DB_USER
-              value: {{ .Values.postgres.user | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "microservices.fullname" . }}-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "microservices.fullname" . }}-config
+                  key: DB_PORT
             - name: DB_NAME
-              value: {{ .Values.postgres.db | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "microservices.fullname" . }}-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "microservices.fullname" . }}-config
+                  key: DB_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: app-secrets
+                  name: {{ include "microservices.fullname" . }}-secrets
                   key: DB_PASSWORD
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-secrets
+                  name: {{ include "microservices.fullname" . }}-secrets
                   key: SECRET_KEY
-          ports:
-            - containerPort: 5000
+{{- end }}
 

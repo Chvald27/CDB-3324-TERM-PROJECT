@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: frontend
   namespace: microservices
-  labels:
-    app: frontend
 spec:
   replicas: 2
   selector:
@@ -17,8 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: YOURUSER/frontend:latest
-          imagePullPolicy: IfNotPresent
+          image: chvald27/cdb-3324-term-project-frontend:latest
           ports:
             - containerPort: 80
 

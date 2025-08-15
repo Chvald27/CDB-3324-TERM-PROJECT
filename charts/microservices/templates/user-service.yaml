@@ -1,0 +1,19 @@
+{{- if .Values.userService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "microservices.fullname" . }}-user
+  labels:
+    app: user-service
+    {{- include "microservices.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.userService.service.type }}
+  selector:
+    app: user-service
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: http
+      port: {{ .Values.userService.service.port }}
+      targetPort: {{ .Values.userService.containerPort }}
+{{- end }}
+

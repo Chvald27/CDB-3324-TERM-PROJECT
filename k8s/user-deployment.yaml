@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: user-service
   namespace: microservices
-  labels:
-    app: user-service
 spec:
   replicas: 2
   selector:
@@ -17,15 +15,25 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: YOURUSER/user-service:latest
-          imagePullPolicy: IfNotPresent
+          image: chvald27/cdb-3324-term-project-user-service:latest
+          ports:
+            - containerPort: 5000
           env:
             - name: DB_HOST
-              value: postgres
-            - name: DB_USER
-              value: postgres
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_HOST
             - name: DB_NAME
-              value: webappdb
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -36,6 +44,4 @@ spec:
                 secretKeyRef:
                   name: app-secrets
                   key: SECRET_KEY
-          ports:
-            - containerPort: 5000
 

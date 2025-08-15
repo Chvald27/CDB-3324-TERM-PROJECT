@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/YOUR_USER/YOUR_REPO.git'
+    repoURL: 'https://github.com/Chvald27/CDB-3324-TERM-PROJECT.git'
     targetRevision: HEAD
     path: charts/microservices
   destination:

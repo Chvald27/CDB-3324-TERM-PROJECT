@@ -1,21 +1,59 @@
-replicaCount: 1
+global:
+  # Optional Helm name overrides
+  nameOverride: ""
+  fullnameOverride: ""
 
-images:
-  auth: YOURUSER/auth-service:latest
-  user: YOURUSER/user-service:latest
-  frontend: YOURUSER/frontend:latest
-  postgres: postgres:15-alpine
+  db:
+    host: "database-cdb-3375-final-project.cl2gqc6scvwd.ca-central-1.rds.amazonaws.com"
+    port: 5432
+    name: "webappdb"
+    user: "postgres"
+    password: "DevOps2024*"
 
-postgres:
-  user: postgres
-  db: webappdb
-  password: DevOps2024*
+  secretKey: "FinalProject2025"
 
-service:
-  frontend:
+# Common image pull secrets if you need them (usually not needed for public Docker Hub images)
+imagePullSecrets: []   # e.g. [{ name: my-dockerhub-secret }]
+
+# ---------- Auth Service ----------
+authService:
+  enabled: true
+  image:
+    repository: chvald27/cdb-3324-term-project-auth-service
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  replicas: 2
+  containerPort: 5000
+  service:
+    type: ClusterIP
+    port: 5000
+
+# ---------- User Service ----------
+userService:
+  enabled: true
+  image:
+    repository: chvald27/cdb-3324-term-project-user-service
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  replicas: 2
+  containerPort: 5000
+  service:
+    type: ClusterIP
+    port: 5000
+
+# ---------- Frontend ----------
+frontend:
+  enabled: true
+  image:
+    repository: chvald27/cdb-3324-term-project-frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  replicas: 2
+  containerPort: 80
+  service:
+    type: NodePort     # Use LoadBalancer in cloud: type: LoadBalancer
     port: 80
-  user:
-    port: 5000
-  auth:
-    port: 5000
+    nodePort: 30080    # If NodePort, pick a free port in 30000-32767
+
+resources: {}          # Optionally define CPU/memory resources per component
 

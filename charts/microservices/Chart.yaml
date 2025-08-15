@@ -1,5 +1,7 @@
 apiVersion: v2
 name: microservices
-description: 3-service microservices app
+description: Helm chart for the frontend, auth-service, and user-service using an external RDS database
+type: application
 version: 0.1.0
+appVersion: "1.0.0"
 
