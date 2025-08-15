@@ -1,61 +1,51 @@
 services:
   auth-service:
-    image: auth-service:latest
-    build: ./auth-service
-    environment:
-      FLASK_ENV: ${FLASK_ENV:-production}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-    secrets:
-      - DB_PASSWORD
-      - SECRET_KEY
+    image: chvald27/cdb-3324-term-project-auth-service:latest
     ports:
       - "5001:5000"
     networks:
       - micro-net
+    env_file:
+      - .env
+    secrets:
+      - db_password
     deploy:
       replicas: 2
+      restart_policy:
+        condition: on-failure
 
   user-service:
-    image: user-service:latest
-    build: ./user-service
-    environment:
-      FLASK_ENV: ${FLASK_ENV:-production}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-    secrets:
-      - DB_PASSWORD
-      - SECRET_KEY
+    image: chvald27/cdb-3324-term-project-user-service:latest
     ports:
       - "5002:5000"
     networks:
       - micro-net
+    env_file:
+      - .env
+    secrets:
+      - db_password
     deploy:
       replicas: 2
+      restart_policy:
+        condition: on-failure
 
   frontend:
-    image: frontend:latest
-    build: ./frontend
-    depends_on:
-      - auth-service
-      - user-service
+    image: chvald27/cdb-3324-term-project-frontend:latest
     ports:
       - "8081:80"
     networks:
       - micro-net
+    env_file:
+      - .env
     deploy:
       replicas: 2
+      restart_policy:
+        condition: on-failure
 
 secrets:
-  DB_PASSWORD:
-    external: true
-  SECRET_KEY:
-    external: true
+  db_password:
+    file: ./db_password.txt
 
 networks:
   micro-net:
-
+    driver: overlay

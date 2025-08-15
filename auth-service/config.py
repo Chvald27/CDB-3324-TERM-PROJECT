@@ -10,7 +10,7 @@ class Config:
     SECRET_KEY = _read_secret("SECRET_KEY") or os.environ.get("SECRET_KEY", "dev-secret")
     DB_USER = _read_secret("DB_USER") or os.environ.get("DB_USER", "postgres")
     DB_PASSWORD = _read_secret("DB_PASSWORD") or os.environ.get("DB_PASSWORD", "postgres")
-    DB_HOST = os.environ.get("DB_HOST", "postgres")
+    DB_HOST = os.environ.get("DB_HOST", "database-cdb-3375-final-project.cl2gqc6scvwd.ca-central-1.rds.amazonaws.com")
     DB_NAME = _read_secret("DB_NAME") or os.environ.get("DB_NAME", "webappdb")
 
     SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
