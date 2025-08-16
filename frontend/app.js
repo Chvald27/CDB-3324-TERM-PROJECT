@@ -1,6 +1,6 @@
 // Update these if you change ports or hostnames
-const AUTH_API = "http://localhost:5001/api";
-const USER_API = "http://localhost:5002/api";
+const AUTH_API = "http://auth-service:5000/api";
+const USER_API = "http://user-service:5000/api";
 
 // --------------------
 // Token and Auth Utils

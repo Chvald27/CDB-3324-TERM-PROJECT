@@ -15,7 +15,12 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: chvald27/cdb-3324-term-project-frontend:latest
+          image: chvald27/cdb-3324-term-project-frontend:v2
           ports:
             - containerPort: 80
+          env:
+            - name: AUTH_API
+              value: "http://auth-service:5000/api"
+            - name: USER_API
+              value: "http://user-service:5000/api"
 
