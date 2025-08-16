@@ -53,7 +53,7 @@ frontend:
   service:
     type: NodePort     # Use LoadBalancer in cloud: type: LoadBalancer
     port: 80
-    nodePort: 30080    # If NodePort, pick a free port in 30000-32767
+    nodePort: 30081    # If NodePort, pick a free port in 30000-32767
 
 resources: {}          # Optionally define CPU/memory resources per component
 
